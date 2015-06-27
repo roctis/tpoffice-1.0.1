@@ -24,7 +24,7 @@ class TCP_connection_CLIENT:
                 f.write(data)
                 data = self.s.recv(self.buffer_size)
                 delim=str(data)
-                if delim.find("@x@")!=-1:
+                if delim.find("@!&^")!=-1:
                     f.write(data)
                     break
            

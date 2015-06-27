@@ -58,7 +58,7 @@ class TCP_connection_SERVER:
                         available_client.send(data)
                         data=f.read(1024)
                     f.close()
-                    available_client.send("@x@")
+                    available_client.send("@!&^")
 #                    except socket.error:
 #                        print "server 62"
 #                        pass
