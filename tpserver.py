@@ -186,8 +186,8 @@ if __name__ == '__main__':
 
     
     print
-    args, sources = getopt.getopt(sys.argv[1:])
-    args = dict(args)
+    #args, sources = getopt.getopt(sys.argv[1:])
+    
 
 #FLAGS
     server_shutdown=False
