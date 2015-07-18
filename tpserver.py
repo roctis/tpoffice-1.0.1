@@ -11,6 +11,7 @@ class TCP_connection_SERVER:
         self.backlog=backlog
         #create tcp socket and binding'
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(host_port)
         self.s.listen(backlog)
         
@@ -214,8 +215,10 @@ if __name__ == '__main__':
             file_name=get_server_temp_path(file_name, 'server-dl/')
             doc.receive_send_file(file_name, msg[1])
         elif msg[0].find('@!fileto@!')!=-1:
-            address=get_address(msg[0])
-            print address
+            file_name=get_filename(msg[0])
+            text.send_to_clients("@!file@!#"+file_name)
+            file_name=get_server_temp_path(file_name, 'server-dl/')
+            doc.receive_send_file(file_name, msg[1], msg[2])
         
         elif msg[0].find('>xtheserver<')!=-1:
             server_shutdown=True
@@ -228,3 +231,4 @@ if __name__ == '__main__':
         
     text.close_socket()
     doc.close_socket()
+

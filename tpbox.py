@@ -21,12 +21,13 @@ class TCP_connection_CLIENT:
             data = self.s.recv(self.buffer_size)
             delim=str(data) #delimiter for the TCP connection...
             while data:
-                f.write(data)
-                data = self.s.recv(self.buffer_size)
-                delim=str(data)
                 if delim.find("@!&^")!=-1:
-                    f.write(data)
+                    f.write(data[:-4])
                     break
+                else:
+                    f.write(data)
+                    data = self.s.recv(self.buffer_size)
+                    delim=str(data)
            
             f.close()
         except socket.timeout:
@@ -249,3 +250,4 @@ if __name__ == '__main__':
     doc.close_socket()
     exit()
     
+
