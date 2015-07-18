@@ -11,7 +11,7 @@ class TCP_connection_SERVER:
         self.backlog=backlog
         #create tcp socket and binding'
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+	    self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(host_port)
         self.s.listen(backlog)
         
@@ -72,6 +72,10 @@ class TCP_connection_SERVER:
                 dest_client.send(data)
                 data=f.read(1024)
             f.close()
+
+        if rm_server_temp_files:
+            os.remove('server-dl/filename')
+
             
         
             
@@ -191,6 +195,7 @@ if __name__ == '__main__':
     
 
 #FLAGS
+    rm_server_temp_files=True
     server_shutdown=False
     
 #global variables
