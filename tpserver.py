@@ -9,9 +9,9 @@ class TCP_connection_SERVER:
         self.host_port=host_port
         self.buffer_size=buffer_size
         self.backlog=backlog
-        #create tcp socket and binding'
+        #create tcp socket and binding
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	    self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(host_port)
         self.s.listen(backlog)
         
@@ -49,6 +49,7 @@ class TCP_connection_SERVER:
         
                 
     def send_file(self,filename, present_client, addr=False):
+        print "Sending file"
         if not addr:
             for available_client , available_addr in TCP_connection_SERVER.clients_addrs:
                 if(present_client!=available_client):
@@ -74,7 +75,7 @@ class TCP_connection_SERVER:
             f.close()
 
         if rm_server_temp_files:
-            os.remove('server-dl/filename')
+            os.remove(filename)
 
             
         
@@ -118,6 +119,7 @@ class UDP_connection_SERVER:
         self.host_port=host_port
         self.buffer_size=buffer_size
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind(host_port)
         UDP_connection_SERVER.udp_conn_count+=1
         
