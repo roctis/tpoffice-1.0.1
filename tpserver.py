@@ -32,7 +32,7 @@ class TCP_connection_SERVER:
         return True
      
      
-    def receive_send_file(self, filename, address=False, dest_address=False):
+    def receive_send_file(self, filename, address=False, dest_address=False,only_to_server=False):
         present_client, present_addr=self.get_req_socket(address)
         present_client.settimeout(2.0)
         f=file(filename,'wb')
@@ -44,7 +44,7 @@ class TCP_connection_SERVER:
         except socket.timeout:
             f.close()
             print "Received File: %s" % (filename)
-        if len(TCP_connection_SERVER.clients_addrs)>1:
+        if len(TCP_connection_SERVER.clients_addrs)>1 and not only_to_server:
             self.send_file(filename, present_client)
         
                 
@@ -226,6 +226,10 @@ if __name__ == '__main__':
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
             doc.receive_send_file(file_name, msg[1], msg[2])
+        elif msg[0].find('@!filetos@!')!=-1:
+            file_name=get_filename(msg[0])
+            file_name=get_server_temp_path(file_name, 'server-dl/')
+            doc.receive_send_file(file_name, msg[1],False,only_to_server=True )
         
         elif msg[0].find('>xtheserver<')!=-1:
             server_shutdown=True
