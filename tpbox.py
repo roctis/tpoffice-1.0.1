@@ -17,10 +17,13 @@ class TCP_connection_CLIENT:
     def receive_file(self, filename):
         #self.s.settimeout(2.0)
         f=file(filename,'wb')
+        i=0
         try:
             data = self.s.recv(self.buffer_size)
+            print "Receiveing.",
             delim=str(data) #delimiter for the TCP connection...
             while data:
+                i+=1
                 if delim.find("@!&^")!=-1:
                     f.write(data[:-4])
                     break
@@ -28,8 +31,11 @@ class TCP_connection_CLIENT:
                     f.write(data)
                     data = self.s.recv(self.buffer_size)
                     delim=str(data)
+                if (i%100==0):
+                    print ".",
            
             f.close()
+            print "[100%]"
         except socket.timeout:
             print "client 27"
         print "Received File: %s" % (filename)
@@ -212,6 +218,7 @@ if __name__ == '__main__':
     rT = threading.Thread(target=receving_message, args=("receive_msg",text, doc))
     rT.start()
     alias=str(raw_input("\nName: "))
+    text.send_message(alias+" has joined in")
  
     while not shutdown:
         msg=str(raw_input("[self] "))
