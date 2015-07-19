@@ -183,18 +183,25 @@ if __name__ == '__main__':
     import time
     import threading
     print
-    print 'USAGE:tfbox.py [server_ipaddress]'
+    print 'USAGE:tfbox.py <server_ipaddress>'
     print 'press >save< to save the conversation'
-    print "press >file< to send the file to all the members"
+    print "press >file< to send the file to all clients"
+    print "press >fileto< to send the file to specific ip"
+    print "press >filetos< to send the file to specific ip"
     print "press >xtheserver< to terminate the server"
     print "press [CTRL+Z] to exit the terminal"
     print "press [CTRL+SHIFT+C] to copy the selected part in terminal"
     print "press [CTRL+SHIFT+V] to paste in the terminal"
-    print
-    print
+    from optparse import OptionParser
+    usage = "usage: %prog [options] server_ipaddress"
+    parser = OptionParser(usage=usage)
+    #parser.add_option("-s", "--server", action="store", type="string", dest="save", default="100",
+    #    help="yet to be implemented")
+    #if options.save:
+    #   [code here]
     
     args, sources = getopt.getopt(sys.argv[1:], 'f:', 'shotdir=')
-    args = dict(args)
+    #args = dict(args)
     if len(sources)==0:host='127.0.0.1'
     else:host=sources[0]
 
@@ -234,19 +241,33 @@ if __name__ == '__main__':
             #file_transfer=True
             print
             path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
+            path=path.strip("\'")
+            path=path[:-2]
             filename=get_filename(path)
             text.send_message('@!file@!'+'#'+filename)
+            doc.send_file(path)
+        elif msg.find('>filetos<')!=-1:
+            #file_transfer=True
+            print
+            path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
+            path=path.strip("\'")
+            path=path[:-2]
+            filename=get_filename(path)
+            text.send_message('@!filetos@!'+'#'+filename)
             doc.send_file(path)
         elif msg.find('>fileto<')!=-1:
             file_transfer=True
             print
             path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
+            path=path.strip("\'")
+            path=path[:-2]
             filename=get_filename(path)
             print
             address=str(raw_input("Enter the ip address of destination e.g: 192.168.0.34  :\n"))
             path_ip=str('@!fileto@!'+'#'+filename+"#"+address.strip())
             print
             text.send_message(path_ip)
+
         #sendig file ends here
         else:
             msg='['+alias+'] '+msg
