@@ -220,12 +220,12 @@ if __name__ == '__main__':
             file_name=get_filename(msg[0])
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
-            doc.receive_send_file(file_name, msg[1])
+            doc.receive_send_file(file_name, msg[1],False,only_to_server=False)
         elif msg[0].find('@!fileto@!')!=-1:
             file_name=get_filename(msg[0])
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
-            doc.receive_send_file(file_name, msg[1], msg[2])
+            doc.receive_send_file(file_name, msg[1], msg[2],False)
         elif msg[0].find('@!filetos@!')!=-1:
             file_name=get_filename(msg[0])
             file_name=get_server_temp_path(file_name, 'server-dl/')
