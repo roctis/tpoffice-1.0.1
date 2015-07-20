@@ -42,15 +42,19 @@ class TCP_connection_CLIENT:
     
         
     def send_file(self, filename):
+        i=0
         try:
             f=open(filename, 'rb')
         except: 
             print "UNABLE TO READ THE FILE"
             pass
         data=f.read(1024)
-        print "\nSending "+filename+"......................................", 
+        print "\nSending "+filename+".",
     #try:
-        while data: 
+        while data:
+            i+=1
+            if (i%100==0):
+                    print ".",
             self.s.send(data)
             data=f.read(self.buffer_size)
                 

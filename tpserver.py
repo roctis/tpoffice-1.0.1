@@ -55,15 +55,16 @@ class TCP_connection_SERVER:
                 if(present_client!=available_client):
                     f=open(filename, 'rb')
                     data=f.read(1024)
-                #try:
+                try:
                     while data: 
                         available_client.send(data)
                         data=f.read(1024)
                     f.close()
                     available_client.send("@!&^")
-#                    except socket.error:
-#                        print "server 62"
-#                        pass
+                    except socket.error:
+                        print "Removing Client"
+                        rm_dead_socket(available_addr)
+                        pass
         
         else:
             dest_client, dest_addr=self.get_req_socket(addr)
@@ -97,6 +98,23 @@ class TCP_connection_SERVER:
             
         else:
             return TCP_connection_SERVER.clients_addrs[0]
+
+    def rm_dead_socket(self, addr):
+
+        i=-1
+        flag=False
+        if len(TCP_connection_SERVER.clients_addrs)>1:
+            for listed_client, listed_addr in TCP_connection_SERVER.clients_addrs:
+                i+=1
+                #print sending_addr[0]
+                #print addr[0]
+                if listed_addr[0]==addr[0]:
+                    flag=True
+                    break
+            del TCP_connection_SERVER.clients_addrs[i]
+
+        else:
+            del TCP_connection_SERVER.clients_addrs[0]
             
         
                 
