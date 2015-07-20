@@ -32,7 +32,7 @@ class TCP_connection_SERVER:
         return True
      
      
-    def receive_send_file(self, filename, address=False, dest_address=False,only_to_server=False):
+    def receive_send_file(self, filename, address=False,dest_address=False,only_to_server=False):
         present_client, present_addr=self.get_req_socket(address)
         present_client.settimeout(2.0)
         f=file(filename,'wb')
@@ -46,6 +46,9 @@ class TCP_connection_SERVER:
             print "Received File: %s" % (filename)
         if len(TCP_connection_SERVER.clients_addrs)>1 and not only_to_server:
             self.send_file(filename, present_client)
+        if len(TCP_connection_SERVER.clients_addrs)>1 and dest_address:
+            self.send_file(filename, present_client,dest_address)
+
         
                 
     def send_file(self,filename, present_client, addr=False):
@@ -55,16 +58,16 @@ class TCP_connection_SERVER:
                 if(present_client!=available_client):
                     f=open(filename, 'rb')
                     data=f.read(1024)
-                try:
-                    while data: 
-                        available_client.send(data)
-                        data=f.read(1024)
-                    f.close()
-                    available_client.send("@!&^")
-                except socket.error:
-                    print "Removing Client"
-                    rm_dead_socket(available_addr)
-                    pass
+                    try:
+                        while data:
+                            available_client.send(data)
+                            data=f.read(1024)
+                        f.close()
+                        available_client.send("@!&^")
+                    except socket.error:
+                        print "Removing Client"
+                        rm_dead_socket(available_addr)
+                        pass
         
         else:
             dest_client, dest_addr=self.get_req_socket(addr)
@@ -243,7 +246,7 @@ if __name__ == '__main__':
             file_name=get_filename(msg[0])
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
-            doc.receive_send_file(file_name, msg[1], msg[2],False)
+            doc.receive_send_file(file_name, msg[1], msg[2],only_to_server=False)
         elif msg[0].find('@!filetos@!')!=-1:
             file_name=get_filename(msg[0])
             file_name=get_server_temp_path(file_name, 'server-dl/')
