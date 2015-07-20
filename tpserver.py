@@ -61,10 +61,10 @@ class TCP_connection_SERVER:
                         data=f.read(1024)
                     f.close()
                     available_client.send("@!&^")
-                    except socket.error:
-                        print "Removing Client"
-                        rm_dead_socket(available_addr)
-                        pass
+                except socket.error:
+                    print "Removing Client"
+                    rm_dead_socket(available_addr)
+                    pass
         
         else:
             dest_client, dest_addr=self.get_req_socket(addr)
