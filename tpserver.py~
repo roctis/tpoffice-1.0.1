@@ -75,6 +75,7 @@ class TCP_connection_SERVER:
 		
             dest_client, dest_addr=self.get_req_socket(addr)
 	    print dest_addr
+	    print TCP_connection_SERVER.clients_addrs
             f=open(filename, 'rb')
             data=f.read(1024)
             try:
