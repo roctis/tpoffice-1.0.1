@@ -245,8 +245,8 @@ if __name__ == '__main__':
             #file_transfer=True
             print
             path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
-            path=path.strip(" ")
             path=path.strip("\'")
+            path=path[:-2]
             filename=get_filename(path)
             text.send_message('@!file@!'+'#'+filename)
             doc.send_file(path)
@@ -254,18 +254,18 @@ if __name__ == '__main__':
             #file_transfer=True
             print
             path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
-            path=path.strip(" ")
             path=path.strip("\'")
-	    filename=get_filename(path)
+            path=path[:-2]
+            filename=get_filename(path)
             text.send_message('@!filetos@!'+'#'+filename)
             doc.send_file(path)
         elif msg.find('>fileto<')!=-1:
             file_transfer=True
             print
             path=str(raw_input("Enter the path of file e.g: 'data/foo.txt'  :\n"))
-            path=path.strip(" ")
             path=path.strip("\'")
-	    filename=get_filename(path)
+            path=path[:-2]
+            filename=get_filename(path)
             print
             address=str(raw_input("Enter the ip address of destination e.g: 192.168.0.34  :\n"))
             path_ip=str('@!fileto@!'+'#'+filename+"#"+address.strip())

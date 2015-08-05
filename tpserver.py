@@ -44,18 +44,16 @@ class TCP_connection_SERVER:
         except socket.timeout:
             f.close()
             print "Received File: %s" % (filename)
-	if len(TCP_connection_SERVER.clients_addrs)>1 and not only_to_server:
+        if len(TCP_connection_SERVER.clients_addrs)>1 and not only_to_server:
+            self.send_file(filename, present_client)
+        if len(TCP_connection_SERVER.clients_addrs)>1 and dest_address:
             self.send_file(filename, present_client,dest_address)
-	else:
-	    print "Transfered to server.....[100%]"
-        
 
         
                 
     def send_file(self,filename, present_client, addr=False):
-        print "Sending file to ",
+        print "Sending file"
         if not addr:
-	    print "all "
             for available_client , available_addr in TCP_connection_SERVER.clients_addrs:
                 if(present_client!=available_client):
                     f=open(filename, 'rb')
@@ -68,24 +66,17 @@ class TCP_connection_SERVER:
                         available_client.send("@!&^")
                     except socket.error:
                         print "Removing Client"
-                        self.rm_dead_socket(available_addr)
-                        continue
+                        rm_dead_socket(available_addr)
+                        pass
         
         else:
-		
             dest_client, dest_addr=self.get_req_socket(addr)
-	    print dest_addr
             f=open(filename, 'rb')
             data=f.read(1024)
-            try:
-            	while data:
-                	dest_client.send(data)
-                        data=f.read(1024)
-                f.close()
-                dest_client.send("@!&^")
-            except socket.error:
-                print "No Requested Client Available"
-                self.rm_dead_socket(available_addr)
+            while data:
+                dest_client.send(data)
+                data=f.read(1024)
+            f.close()
 
         if rm_server_temp_files:
             os.remove(filename)
@@ -120,7 +111,7 @@ class TCP_connection_SERVER:
                 i+=1
                 #print sending_addr[0]
                 #print addr[0]
-                if listed_addr==addr:
+                if listed_addr[0]==addr[0]:
                     flag=True
                     break
             del TCP_connection_SERVER.clients_addrs[i]
@@ -157,12 +148,11 @@ class UDP_connection_SERVER:
         'receive udp message'
         self.data,self.addr = self.s.recvfrom(self.buffer_size)
         self.data=str(self.data)
-	self.add_client_address(self.addr);
         return (self.data, self.addr)
                
-    def add_client_address(self,addr):
-        if addr not in UDP_connection_SERVER.clients:
-            UDP_connection_SERVER.clients.append(addr)
+    def add_client_address(self):
+        if self.addr not in UDP_connection_SERVER.clients:
+            UDP_connection_SERVER.clients.append(self.addr)    
         return UDP_connection_SERVER.clients
         
     def display_message(self):
@@ -175,12 +165,9 @@ class UDP_connection_SERVER:
             if client !=self.addr:
                 try:
                     self.s.sendto(self.data,  client)
-                     
+                    return True 
                 except:
-	 	    #self.rm_dead_client(self,addr)
-		    continue     
-  
-    
+                    return False        
     
     def close_socket(self):
         self.s.close()
@@ -254,13 +241,12 @@ if __name__ == '__main__':
             file_name=get_filename(msg[0])
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
-            doc.receive_send_file(file_name, msg[1],False, only_to_server=False)
+            doc.receive_send_file(file_name, msg[1],False,only_to_server=False)
         elif msg[0].find('@!fileto@!')!=-1:
             file_name=get_filename(msg[0])
-	    dest_address=get_address(msg[0])
             text.send_to_clients("@!file@!#"+file_name)
             file_name=get_server_temp_path(file_name, 'server-dl/')
-            doc.receive_send_file(file_name, msg[1], dest_address, only_to_server=False)
+            doc.receive_send_file(file_name, msg[1], msg[2],only_to_server=False)
         elif msg[0].find('@!filetos@!')!=-1:
             file_name=get_filename(msg[0])
             file_name=get_server_temp_path(file_name, 'server-dl/')
@@ -270,7 +256,7 @@ if __name__ == '__main__':
             server_shutdown=True
             
         else:
-            
+            add_client=text.add_client_address()
             text.display_message()
             send_all=text.send_to_clients()
         time.sleep(0.2)
